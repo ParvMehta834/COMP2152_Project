@@ -3,7 +3,6 @@ import random
 import os
 import platform
 import functions
-import hero
 print(f"OS: {os.name}")
 print(f"Python Version: {platform.python_version()}\n")
 
@@ -243,12 +242,6 @@ if not input_invalid:
 
     if(m_health_points <= 0):
         winner = "Hero"
-        if random.random() < 0.4:  # 40% drop chance
-            shard = functions.generate_shard("Monster")
-            if not hasattr(hero, 'memory_shards'):
-                hero.memory_shards = []
-            hero.memory_shards.append(shard)
-            print(f"\n    |    Obtained {shard['type']} Shard (Tier {shard['tier']})!") 
     else:
         winner = "Monster"
 

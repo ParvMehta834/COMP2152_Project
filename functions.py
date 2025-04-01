@@ -2,7 +2,6 @@
 import random
 import os
 import platform
-import json
 
 #Print system info when imported
 print(f"Operating System: {os.name}")
@@ -82,26 +81,10 @@ def hero_attacks(combat_strength, m_health_points):
         # Player only damaged the monster
         m_health_points -= combat_strength
         print("    |    You have reduced the monster's health to: " + str(m_health_points))
-    return m_health_points, {"shard_chance": 0.4}
+    return m_health_points
 
 # Monster's Attack Function
 def monster_attacks(m_combat_strength, health_points):
-        # ------ NEW SHARD SYSTEM FUNCTIONS ------
-    def generate_shard(enemy_type):
-        """Create randomized memory shards"""
-        tiers = {
-            1: {"type": "Common", "lore": f"{enemy_type} combat patterns"},
-            2: {"type": "Rare", "lore": f"{enemy_type} secret weakness"}, 
-            3: {"type": "Legendary", "lore": f"Lost {enemy_type} treasure map"}
-        }
-        tier = random.choices([1, 2, 3], weights=[70, 25, 5])[0]
-        return {"tier": tier, **tiers[tier]}
-
-    def decrypt_shard(shard, hero_strength):
-        """Decrypt shard content with validation"""
-        if shard["tier"] == 3 and hero_strength < 15:
-            return "Decrypt failed: Need 15+ strength"
-        return f"{shard['type']} Shard: {shard['lore']}"
     ascii_image2 = """                                                                 
            @@@@ @                           
       (     @*&@  ,                         
@@ -129,7 +112,6 @@ def monster_attacks(m_combat_strength, health_points):
         health_points -= m_combat_strength
         print("    |    The monster has reduced Player's health to: " + str(health_points))
     return health_points
-
 
 # Improved dream levels with validation
 def get_dream_level():
@@ -168,28 +150,28 @@ def inception_dream(num_dream_lvls):
     return 0
 
 # Modified save/load with monsters killed tracking
-def save_game(winner, hero_name="", num_stars=0, monsters_killed=0, shards=None):
-    """Now saves monsters killed count and shards"""
-    with open("save.txt", "w") as file:
-        file.write(f"MonstersKilled:{monsters_killed}\n")
-        if shards:  # NEW: Save shard data
-            file.write(f"Shards:{json.dumps(shards)}\n")
+def save_game(winner, hero_name="", num_stars=0, monsters_killed=0):
+    """Now saves monsters killed count"""
+    with open("save.txt", "w") as file:  # Changed to 'w' to overwrite
+        file.write(f"MonstersKilled:{monsters_killed}\n")  # First line
         if winner == "Hero":
             file.write(f"Hero {hero_name} has killed a monster and gained {num_stars} stars.\n")
         elif winner == "Monster":
             file.write("Monster has killed the hero previously\n")
 
 def load_game():
-    """Now returns (last_line, monsters_killed, shards)"""
+    """Now returns (last_line, monsters_killed)"""
     try:
         with open("save.txt", "r") as file:
             lines = file.readlines()
-            monsters_killed = int(lines[0].split(":")[1].strip())
-            shards = json.loads(lines[1].split(":")[1]) if len(lines) > 1 else []
-            last_line = lines[-1].strip() if len(lines) > 2 else ""
-            return last_line, monsters_killed, shards
-    except (FileNotFoundError, json.JSONDecodeError, IndexError):
-        return None, 0, []  # Returns empty shard list by defaul
+            if lines:
+                # Get monsters killed from first line
+                monsters_killed = int(lines[0].split(":")[1].strip())
+                last_line = lines[-1].strip() if len(lines) > 1 else ""
+                return last_line, monsters_killed
+    except (FileNotFoundError, IndexError, ValueError):
+        pass  # File doesn't exist or is corrupted
+    return None, 0  # Default values
 
 def adjust_combat_strength(combat_strength, m_combat_strength):
     """Updated to work with new load_game() return"""
