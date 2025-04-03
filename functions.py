@@ -188,3 +188,21 @@ def adjust_combat_strength(combat_strength, m_combat_strength):
         else:
             print("    |    ... Based on your previous game, neither the hero nor the monster's combat strength will be increased")
     return combat_strength, m_combat_strength, monsters_killed
+
+def apply_loot_bonuses(belt, combat_strength):
+    """
+    Check the player's belt for specific item combinations and apply combat bonuses.
+    """
+    bonus_combos = {
+        ("Leather Boots", "Flimsy Gloves"): 1,
+        ("Health Potion", "Secret Note"): 2,
+        ("Poison Potion", "Leather Boots"): -1
+    }
+
+    for combo, bonus in bonus_combos.items():
+        if all(item in belt for item in combo):
+            combat_strength += bonus
+            print("    |    Combo bonus applied! Items:", combo)
+            print(f"    |    Combat strength {'increased' if bonus > 0 else 'decreased'} by {abs(bonus)}")
+
+    return combat_strength

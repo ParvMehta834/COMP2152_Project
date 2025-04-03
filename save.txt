@@ -1,0 +1,2 @@
+MonstersKilled:0
+Monster has killed the hero previously
