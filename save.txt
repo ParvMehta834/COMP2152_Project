@@ -1,2 +1,5 @@
 MonstersKilled:0
+
+LoreProgress:None
+
 Monster has killed the hero previously

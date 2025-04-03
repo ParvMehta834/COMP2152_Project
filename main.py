@@ -4,8 +4,17 @@ import os
 import platform
 import functions
 
+from lore_shard import LoreShard
+from monster import Monster
+
+
 print(f"OS: {os.name}")
 print(f"Python Version: {platform.python_version()}\n")
+
+
+# Initialize lore system
+lore_system = LoreShard()
+
 
 # Define two Dice
 small_dice_options = list(range(1, 7))
@@ -148,6 +157,11 @@ if not input_invalid:
                                       """
     print(ascii_image4)
     power_roll = random.choice(["Fire Magic", "Freeze Time", "Super Hearing"])
+<<<<<<< HEAD
+=======
+
+    # Increase the monster's combat strength by its power
+>>>>>>> a627453b88a993bee217f696c5a34571a4520f82
     m_combat_strength += min(6, m_combat_strength + monster_powers[power_roll])
     print("    |    The monster's combat strength is now " + str(m_combat_strength) + " using the " + power_roll + " magic power")
 
@@ -208,8 +222,18 @@ if not input_invalid:
                 else:
                     num_stars = 2
 
-    if(m_health_points <= 0):
+    # Determine winner and handle lore shard
+    if m_health_points <= 0:
         winner = "Hero"
+        current_monster = Monster(m_combat_strength, m_health_points)
+        shard = current_monster.on_death()
+        
+        if shard:
+            print("\n    |    !! A glowing lore shard falls from the monster's remains !!")
+            choice = input("    |    Examine the shard now? (Y/N): ").upper()
+            if choice == 'Y':
+                lore_system.decrypt_minigame(shard)
+                print("\n    |    This lore has been added to your collection.")
     else:
         winner = "Monster"
 
@@ -234,4 +258,9 @@ if not input_invalid:
     if not input_invalid:
         stars_display = "*" * num_stars
         print("    |    Hero " + short_name + " gets <" + stars_display + "> stars")
+<<<<<<< HEAD
         functions.save_game(winner, hero_name=short_name, num_stars=num_stars)
+=======
+
+        functions.save_game(winner, hero_name=short_name, num_stars=num_stars)
+>>>>>>> a627453b88a993bee217f696c5a34571a4520f82

@@ -2,13 +2,14 @@
 import random
 import os
 import platform
+from lore_shard import LoreShard  # Add this import
 
-#Print system info when imported
+# Print system info when imported
 print(f"Operating System: {os.name}")
 print(f"Python Version: {platform.python_version()}")
 
-# Will the line below print when you import function.py into main.py?
-# print("Inside function.py")
+# Initialize lore system
+lore_system = LoreShard()
 
 def use_loot(belt, health_points):
     good_loot_options = ["Health Potion", "Leather Boots"]
@@ -49,7 +50,6 @@ def collect_loot(loot_options, belt):
     print("    |    Your belt: ", belt)
     return loot_options, belt
 
-# Hero's Attack Function
 def hero_attacks(combat_strength, m_health_points):
     ascii_image = """
                                 @@   @@ 
@@ -69,21 +69,17 @@ def hero_attacks(combat_strength, m_health_points):
          @   @@@@@@@                    
         @            @                  
       @              @                  
-
-  """
+    """
     print(ascii_image)
     print("    |    Player's weapon (" + str(combat_strength) + ") ---> Monster (" + str(m_health_points) + ")")
     if combat_strength >= m_health_points:
-        # Player was strong enough to kill monster in one blow
         m_health_points = 0
         print("    |    You have killed the monster")
     else:
-        # Player only damaged the monster
         m_health_points -= combat_strength
         print("    |    You have reduced the monster's health to: " + str(m_health_points))
     return m_health_points
 
-# Monster's Attack Function
 def monster_attacks(m_combat_strength, health_points):
     ascii_image2 = """                                                                 
            @@@@ @                           
@@ -104,16 +100,13 @@ def monster_attacks(m_combat_strength, health_points):
     print(ascii_image2)
     print("    |    Monster's Claw (" + str(m_combat_strength) + ") ---> Player (" + str(health_points) + ")")
     if m_combat_strength >= health_points:
-        # Monster was strong enough to kill player in one blow
         health_points = 0
         print("    |    Player is dead")
     else:
-        # Monster only damaged the player
         health_points -= m_combat_strength
         print("    |    The monster has reduced Player's health to: " + str(health_points))
     return health_points
 
-# Improved dream levels with validation
 def get_dream_level():
     """Helper function for validated dream level input"""
     while True:
@@ -149,33 +142,41 @@ def inception_dream(num_dream_lvls):
         return 1 + int(inception_dream(num_dream_lvls - 1))
     return 0
 
-# Modified save/load with monsters killed tracking
 def save_game(winner, hero_name="", num_stars=0, monsters_killed=0):
-    """Now saves monsters killed count"""
-    with open("save.txt", "w") as file:  # Changed to 'w' to overwrite
-        file.write(f"MonstersKilled:{monsters_killed}\n")  # First line
+    """Now saves monsters killed count and lore progress"""
+    lore_state = ",".join(lore_system.collected_lore) if lore_system.collected_lore else "None"
+    
+    with open("save.txt", "w") as file:
+        file.write(f"MonstersKilled:{monsters_killed}\n")
+        file.write(f"LoreProgress:{lore_state}\n")
         if winner == "Hero":
             file.write(f"Hero {hero_name} has killed a monster and gained {num_stars} stars.\n")
         elif winner == "Monster":
             file.write("Monster has killed the hero previously\n")
 
 def load_game():
-    """Now returns (last_line, monsters_killed)"""
+    """Now returns (last_line, monsters_killed, lore_progress)"""
     try:
         with open("save.txt", "r") as file:
             lines = file.readlines()
             if lines:
-                # Get monsters killed from first line
                 monsters_killed = int(lines[0].split(":")[1].strip())
-                last_line = lines[-1].strip() if len(lines) > 1 else ""
-                return last_line, monsters_killed
+                lore_progress = lines[1].split(":")[1].strip().split(",") if len(lines) > 1 else []
+                lore_progress = [lore for lore in lore_progress if lore != "None"]
+                last_line = lines[-1].strip() if len(lines) > 2 else ""
+                return last_line, monsters_killed, lore_progress
     except (FileNotFoundError, IndexError, ValueError):
-        pass  # File doesn't exist or is corrupted
-    return None, 0  # Default values
+        pass
+    return None, 0, []
 
 def adjust_combat_strength(combat_strength, m_combat_strength):
     """Updated to work with new load_game() return"""
-    last_game, monsters_killed = load_game()
+    last_game, monsters_killed, lore_progress = load_game()
+    
+    # Restore collected lore
+    if lore_progress:
+        lore_system.collected_lore = lore_progress
+    
     if last_game:
         if "Hero" in last_game and "gained" in last_game:
             num_stars = int(last_game.split()[-2])
@@ -188,6 +189,7 @@ def adjust_combat_strength(combat_strength, m_combat_strength):
         else:
             print("    |    ... Based on your previous game, neither the hero nor the monster's combat strength will be increased")
     return combat_strength, m_combat_strength, monsters_killed
+
 
 def apply_loot_bonuses(belt, combat_strength):
     """
@@ -206,3 +208,15 @@ def apply_loot_bonuses(belt, combat_strength):
             print(f"    |    Combat strength {'increased' if bonus > 0 else 'decreased'} by {abs(bonus)}")
 
     return combat_strength
+
+def show_lore_menu():
+    """Display collected lore fragments"""
+    if not lore_system.collected_lore:
+        print("    |    You haven't collected any lore fragments yet!")
+        return
+    
+    print("\n    |    === COLLECTED LORE ===")
+    for i, lore in enumerate(lore_system.collected_lore, 1):
+        print(f"    |    {i}. {lore}")
+    print("    |    =======================")
+
