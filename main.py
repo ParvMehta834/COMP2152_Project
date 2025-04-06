@@ -157,12 +157,9 @@ if not input_invalid:
                                       """
     print(ascii_image4)
     power_roll = random.choice(["Fire Magic", "Freeze Time", "Super Hearing"])
-<<<<<<< HEAD
-=======
 
     # Increase the monster's combat strength by its power
->>>>>>> a627453b88a993bee217f696c5a34571a4520f82
-    m_combat_strength += min(6, m_combat_strength + monster_powers[power_roll])
+m_combat_strength += min(6, m_combat_strength + monster_powers[power_roll])
     print("    |    The monster's combat strength is now " + str(m_combat_strength) + " using the " + power_roll + " magic power")
 
     num_dream_lvls = -1
@@ -258,9 +255,7 @@ if not input_invalid:
     if not input_invalid:
         stars_display = "*" * num_stars
         print("    |    Hero " + short_name + " gets <" + stars_display + "> stars")
-<<<<<<< HEAD
-        functions.save_game(winner, hero_name=short_name, num_stars=num_stars)
-=======
 
         functions.save_game(winner, hero_name=short_name, num_stars=num_stars)
->>>>>>> a627453b88a993bee217f696c5a34571a4520f82
+
+        functions.save_game(winner, hero_name=short_name, num_stars=num_stars)
