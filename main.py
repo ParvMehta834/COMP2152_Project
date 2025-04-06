@@ -37,6 +37,23 @@ monster_powers = {
 # Define the number of stars to award the player
 num_stars = 0
 
+# Dynamic Monster AI Function
+def monster_dynamic_attack(health_points, belt):
+    # Define AI behavior
+    aggressive_mode = health_points > 10
+    dangerous_loot = ["Bomb", "Nuclear Bomb", "Poison Potion"]
+
+    threat_items = [item for item in belt if item in dangerous_loot]
+    if aggressive_mode and threat_items:
+        print("    |    The monster senses danger in your gear and attacks fiercely!")
+        return "aggressive"
+    elif not aggressive_mode and not threat_items:
+        print("    |    The monster seems cautious, watching your weak state.")
+        return "cautious"
+    else:
+        print("    |    The monster is uncertain but strikes anyway.")
+        return "neutral"
+
 # Loop to get valid input for Hero and Monster's Combat Strength
 i = 0
 input_invalid = True
@@ -47,6 +64,8 @@ while input_invalid and i in range(5):
     combat_strength = input("Enter your combat Strength (1-6): ")
     print("    |", end="    ")
     m_combat_strength = input("Enter the monster's combat Strength (1-6): ")
+    print("    |", end="    ")
+    m_health_points = input("Enter the monster's health Points (10-50): ")
 
     if (not combat_strength.isnumeric()) or (not m_combat_strength.isnumeric()):
         print("    |    One or more invalid inputs. Player needs to enter integer numbers for Combat Strength    |")
@@ -157,11 +176,8 @@ if not input_invalid:
                                       """
     print(ascii_image4)
     power_roll = random.choice(["Fire Magic", "Freeze Time", "Super Hearing"])
-<<<<<<< HEAD
-=======
 
     # Increase the monster's combat strength by its power
->>>>>>> a627453b88a993bee217f696c5a34571a4520f82
     m_combat_strength += min(6, m_combat_strength + monster_powers[power_roll])
     print("    |    The monster's combat strength is now " + str(m_combat_strength) + " using the " + power_roll + " magic power")
 
@@ -257,10 +273,5 @@ if not input_invalid:
 
     if not input_invalid:
         stars_display = "*" * num_stars
-        print("    |    Hero " + short_name + " gets <" + stars_display + "> stars")
-<<<<<<< HEAD
+        print("    |    Hero " + short_name + " gets <" + stars_display + "> stars")       
         functions.save_game(winner, hero_name=short_name, num_stars=num_stars)
-=======
-
-        functions.save_game(winner, hero_name=short_name, num_stars=num_stars)
->>>>>>> a627453b88a993bee217f696c5a34571a4520f82
