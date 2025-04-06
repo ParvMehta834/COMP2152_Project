@@ -178,6 +178,8 @@ if not input_invalid:
     power_roll = random.choice(["Fire Magic", "Freeze Time", "Super Hearing"])
 
     # Increase the monster's combat strength by its power
+
+    m_combat_strength += min(6, m_combat_strength + monster_powers[power_roll])
     m_combat_strength += min(6, m_combat_strength + monster_powers[power_roll])
     print("    |    The monster's combat strength is now " + str(m_combat_strength) + " using the " + power_roll + " magic power")
 
@@ -274,4 +276,7 @@ if not input_invalid:
     if not input_invalid:
         stars_display = "*" * num_stars
         print("    |    Hero " + short_name + " gets <" + stars_display + "> stars")       
+        print("    |    Hero " + short_name + " gets <" + stars_display + "> stars")
+
+        functions.save_game(winner, hero_name=short_name, num_stars=num_stars)
         functions.save_game(winner, hero_name=short_name, num_stars=num_stars)

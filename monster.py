@@ -50,6 +50,7 @@ class Monster(Character):
         damage = random.randint(1, self.combat_strength)
         print(f"Monster attacks with {damage} damage!")
         return damage
+<<<<<<< HEAD
 
     def dynamic_attack(self, hero_health, hero_loot):
         """
@@ -89,3 +90,19 @@ class Monster(Character):
         final_damage = max(1, base_damage + modifier)
         print(f"Monster uses dynamic AI and deals {final_damage} damage!")
         return final_damage
+=======
+    
+def evolve_monster(monster, kill_count):
+    """Enhance monster stats based on how many monsters the hero has defeated"""
+    if kill_count >= 3:
+        print("    |    !! Monster senses your strength and evolves!")
+        monster.combat_strength += 2
+        monster.health_points += 5
+        print(f"    |    Evolved Monster - Strength: {monster.combat_strength}, Health: {monster.health_points}")
+    elif kill_count >= 1:
+        print("    |    Monster evolves slightly due to your success.")
+        monster.combat_strength += 1
+        print(f"    |    Slightly Evolved Monster - Strength: {monster.combat_strength}, Health: {monster.health_points}")
+
+
+>>>>>>> 8b30b91fc05df7b3cf2c540a36ee9d9c74d6d728
